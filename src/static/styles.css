@@ -148,14 +148,37 @@ button:hover {
 }
 
 .participants-list {
-  list-style: disc;
-  margin-left: 18px;
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .participants-list li {
-  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
   color: #444;
   font-size: 14px;
+}
+
+.participant-email {
+  color: #333;
+  margin-right: 8px;
+}
+
+.remove-participant {
+  background: transparent;
+  border: none;
+  color: #c62828;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.remove-participant:hover {
+  background: rgba(198, 40, 40, 0.08);
 }
 
 footer {

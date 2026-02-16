@@ -26,7 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const participantsCount = details.participants.length;
         const participantsHtml = participantsCount
           ? `<ul class="participants-list">${details.participants
-              .map((p) => `<li>${p}</li>`)
+              .map(
+                (p) =>
+                  `<li><span class="participant-email">${p}</span><button class="remove-participant" data-email="${p}" title="Remove participant">✖</button></li>`
+              )
               .join("")}</ul>`
           : `<p class="info">No participants yet</p>`;
 
@@ -42,6 +45,39 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         activitiesList.appendChild(activityCard);
+
+        // Attach remove handlers for this card's buttons
+        activityCard.querySelectorAll(".remove-participant").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const email = btn.getAttribute("data-email");
+            try {
+              const resp = await fetch(
+                `/activities/${encodeURIComponent(name)}/participants?email=${encodeURIComponent(email)}`,
+                { method: "DELETE" }
+              );
+
+              const resJson = await resp.json();
+              if (resp.ok) {
+                messageDiv.textContent = resJson.message;
+                messageDiv.className = "success";
+                messageDiv.classList.remove("hidden");
+                // Refresh activities to reflect removal
+                fetchActivities();
+              } else {
+                messageDiv.textContent = resJson.detail || "Failed to remove participant";
+                messageDiv.className = "error";
+                messageDiv.classList.remove("hidden");
+              }
+
+              setTimeout(() => messageDiv.classList.add("hidden"), 5000);
+            } catch (err) {
+              messageDiv.textContent = "Failed to remove participant.";
+              messageDiv.className = "error";
+              messageDiv.classList.remove("hidden");
+              console.error(err);
+            }
+          });
+        });
 
         // Add option to select dropdown
         const option = document.createElement("option");
